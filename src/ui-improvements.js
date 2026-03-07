@@ -81,7 +81,7 @@ const PATCH_NOTES = `- Made delay between strategic attacks configurable (Wave P
 v2.2.4:
 - Added menu link to Lunar Plague event
 
-v2.2.3: 
+v2.2.3:
 - vanilla loot-x button now ignores boss corpses (if set)
 
 v2.2.2:
@@ -127,7 +127,7 @@ v2.2.2:
         border-color: red;
       }
     }
-    
+
   `);
 
   // ===============================
@@ -1665,11 +1665,21 @@ v2.2.2:
         try {
           const startAttackTime =
             results.length === 0 ? startJoinTime : performance.now();
-          const res = await doAttack(
-            monsterId,
-            parseInt(skill.id, 10),
-            skill.cost
-          );
+          let res;
+          let redo=true;
+          while(redo){
+            res = await doAttack(
+              monsterId,
+              parseInt(skill.id, 10),
+              skill.cost
+            );
+            if(!res.msg.includes("Slow")){
+               redo=false
+            }else{
+              await sleep(200);
+            }
+          }
+
 
           const msg =
             res.msg ||
@@ -3095,7 +3105,7 @@ v2.2.2:
         .blm-item img{width:64px;height:64px;object-fit:cover;border-radius:8px;display:block;margin:0 auto 6px}
         .blm-item small{display:block;line-height:1.2}
 
-        
+
         .blm-item-qty {
           position: absolute;
           top: 4px;
